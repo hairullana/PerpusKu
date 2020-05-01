@@ -1,37 +1,34 @@
-<!-- LIVE SEARCH JQUERY -->
 <?php
-    //session start
-    session_start();    
+//session start
+session_start();    
 
-    //panggil file php
-    include 'connect_db.php';
-    include 'functions.php';
+include 'connect_db.php';
+include 'functions.php';
 
-    //konfirgurasi pagination
-    $jumlahDataPerHalaman = 3;
-    $jumlahData = count(query("SELECT * FROM buku"));
-    //ceil() = pembulatan ke atas
-    $jumlahHalaman = ceil($jumlahData / $jumlahDataPerHalaman);
+//konfirgurasi pagination
+$jumlahDataPerHalaman = 3;
+$jumlahData = count(query("SELECT * FROM buku"));
+//ceil() = pembulatan ke atas
+$jumlahHalaman = ceil($jumlahData / $jumlahDataPerHalaman);
+//menentukan halaman aktif
+//$halamanAktif = ( isset($_GET["page"]) ) ? $_GET["page"] : 1;
+if ( isset($_GET["page"])){
+    $halamanAktif = $_GET["page"];
+}else{
+    $halamanAktif = 1;
+}
+//data awal
+$awalData = ( $jumlahDataPerHalaman * $halamanAktif ) - $jumlahDataPerHalaman;
 
-    //menentukan halaman aktif
-    //$halamanAktif = ( isset($_GET["page"]) ) ? $_GET["page"] : 1; = versi simple
-    if ( isset($_GET["page"])){
-        $halamanAktif = $_GET["page"];
-    }else{
-        $halamanAktif = 1;
-    }
+//fungsi memasukkan data di db ke array
+// $buku = query("SELECT * FROM buku LIMIT $awalData, $jumlahDataPerHalaman");
+$buku = query("SELECT * FROM buku");
 
-    //data awal
-    $awalData = ( $jumlahDataPerHalaman * $halamanAktif ) - $jumlahDataPerHalaman;
 
-    //fungsi memasukkan data di db ke array
-    $buku = query("SELECT * FROM buku ORDER BY id_buku DESC LIMIT $awalData, $jumlahDataPerHalaman");
-    //$buku = query("SELECT * FROM buku");
-
-    //ketika tombol cari ditekan
-    if ( isset($_POST["cari"])) {
-        $buku = cari($_POST["keyword"]);
-    }
+//ketika tombol cari ditekan
+if ( isset($_POST["cari"])) {
+    $buku = cari($_POST["keyword"]);
+}
 
 ?>
 <!DOCTYPE html>
@@ -62,7 +59,7 @@
             <br>
             <div class="center">
                 <form action="" method="POST" class="input-field inline">
-                    <input type="text" size=40 name="keyword" placeholder="Keywords" autofocus autocomplete="off" id="keyword">
+                    <input type="text" size=40 name="keyword" placeholder="masukkan keyword pencarian" autofocus autocomplete="off" id="keyword">
                     <button class="btn red darken-1" type="submit" name="cari" id="cariData"><i class="material-icons">search</i></button>
                 </form>
             </div>
@@ -104,37 +101,39 @@
         <!-- end pagination -->
             
         <!-- data buku -->
-        <div class="container">
-            <div class="center">
-                <table cellpadding=10 class="responsive-table centered">
-                    <tr>
-                        <td style="font-weight:bold">No.</td>
-                        <td style="font-weight:bold">Cover</td>
-                        <td style="font-weight:bold">ID Buku</td>
-                        <td style="font-weight:bold">Judul</td>
-                        <td style="font-weight:bold">Penulis</td>
-                        <td style="font-weight:bold">Penerbit</td>
-                        <td style="font-weight:bold">Tahun Terbit</td>
-                        <td style="font-weight:bold">Aksi</td>
-                    </tr>
-                    <?php $i = 1; ?>
-                    <?php foreach ( $buku as $data_buku ) : ?>
-                    <tr>
-                        <td><?= $i; ?></td>
-                        <td><img width=50 height=50 class="circle responsive-img" src=<?= "'cover/".$data_buku['cover']."'" ?> /></td>
-                        <td><?= $data_buku["no_buku"]; ?></td>
-                        <td><?= $data_buku["judul"]; ?></td>
-                        <td><?= $data_buku["penulis"]; ?></td>
-                        <td><?= $data_buku["penerbit"]; ?></td>
-                        <td><?= $data_buku["tahun"]; ?></td>
-                        <td>
-                            <a class="btn red darken-1" href="update.php?no_buku=<?= $data_buku['no_buku'] ?>"><i class="material-icons">edit</i></a>
-                            <!-- fungsi js yg berfungsi untuk mengkonfirmasi tindakan -->
-                            <a class="btn red darken-1" href="hapus.php?no_buku=<?= $data_buku['no_buku'] ?>" onclick="return confirm('Apakah anda yakin ingin menghapus data ?')";><i class="material-icons">delete</i></a>
-                        </td>
-                    </tr>
-                    <?php  $i++; endforeach; ?>
-                </table>
+        <div id="container">
+            <div class="container">
+                <div class="center">
+                    <table cellpadding=10 class="responsive-table centered">
+                        <tr>
+                            <td style="font-weight:bold">No.</td>
+                            <td style="font-weight:bold">Cover</td>
+                            <td style="font-weight:bold">ID Buku</td>
+                            <td style="font-weight:bold">Judul</td>
+                            <td style="font-weight:bold">Penulis</td>
+                            <td style="font-weight:bold">Penerbit</td>
+                            <td style="font-weight:bold">Tahun Terbit</td>
+                            <td style="font-weight:bold">Aksi</td>
+                        </tr>
+                        <?php $i = 1; ?>
+                        <?php foreach ( $buku as $data_buku ) : ?>
+                        <tr>
+                            <td><?= $i; ?></td>
+                            <td><img width=50 height=50 class="circle responsive-img" src=<?= "'cover/".$data_buku['cover']."'" ?> /></td>
+                            <td><?= $data_buku["no_buku"]; ?></td>
+                            <td><?= $data_buku["judul"]; ?></td>
+                            <td><?= $data_buku["penulis"]; ?></td>
+                            <td><?= $data_buku["penerbit"]; ?></td>
+                            <td><?= $data_buku["tahun"]; ?></td>
+                            <td>
+                                <a class="btn red darken-1" href="update.php?no_buku=<?= $data_buku['no_buku'] ?>"><i class="material-icons">edit</i></a>
+                                <!-- fungsi js yg berfungsi untuk mengkonfirmasi tindakan -->
+                                <a class="btn red darken-1" href="hapus.php?no_buku=<?= $data_buku['no_buku'] ?>" onclick="return confirm('Apakah anda yakin ingin menghapus data ?')";><i class="material-icons">delete</i></a>
+                            </td>
+                        </tr>
+                        <?php  $i++; endforeach; ?>
+                    </table>
+                </div>
             </div>
         </div>
         <!-- end data buku -->
@@ -143,5 +142,8 @@
         <!-- footer -->
         <?php include "_footer.php"; ?>
         <!-- end footer -->
+
+        
     </body>
+    <script src="js/scriptAjax.js"></script>
 </html>
