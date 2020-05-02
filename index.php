@@ -21,8 +21,8 @@ if ( isset($_GET["page"])){
 $awalData = ( $jumlahDataPerHalaman * $halamanAktif ) - $jumlahDataPerHalaman;
 
 //fungsi memasukkan data di db ke array
-// $buku = query("SELECT * FROM buku LIMIT $awalData, $jumlahDataPerHalaman");
-$buku = query("SELECT * FROM buku");
+$buku = query("SELECT * FROM buku ORDER BY id_buku DESC LIMIT $awalData, $jumlahDataPerHalaman");
+//$buku = query("SELECT * FROM buku");
 
 
 //ketika tombol cari ditekan
