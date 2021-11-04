@@ -68,7 +68,8 @@ if ( isset($_POST["cari"])) {
 
         <div class="row center">
             <div class="col s4 offset-s4 center">
-                <a class="btn-floating pulse red darken-1" href="tambah_buku.php"><i class="material-icons">add</i></a>  <span class="light">Tambah Data Buku</span>
+                <a class="btn-floating pulse red darken-1" href="tambah_buku.php"><i class="material-icons">add</i></a>
+                <a class="btn-floating pulse red darken-1" href="cetak_buku.php" target="_blank"><i class="material-icons">local_printshop</i></a>
             </div>
         </div>
         
